@@ -14,8 +14,29 @@
 
 		<p>Radio</p><br>
 		<iframe width="560" height="315" src="http://34.116.128.7:5080/Testy/play.html?id=test123" frameborder="0" allowfullscreen></iframe>
-<audio controls autoplay>
-		   <source src="http://34.116.128.7:5080/Testy/streams/test123.m3u8" type="application/vnd.apple.mpegurl">
-</audio>
+ <audio id="audio" controls autoplay></audio>
+
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script>
+    const audio = document.getElementById('audio');
+    const hls = new Hls();
+
+    const streamUrl = 'http://34.116.128.7:5080/Testy/streams/test123.m3u8';
+
+    if (Hls.isSupported()) {
+      hls.loadSource(streamUrl);
+      hls.attachMedia(audio);
+      hls.on(Hls.Events.MANIFEST_PARSED, function () {
+        audio.play();
+      });
+    } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+      audio.src = streamUrl;
+      audio.addEventListener('loadedmetadata', function () {
+        audio.play();
+      });
+    } else {
+      alert('Your browser does not support HLS.');
+    }
+  </script>
 	</body>
 </html>
